@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--    扫描controller包-->
+    <context:component-scan base-package="com.controller"></context:component-scan>
+    <!-- 可以添加过滤器，解决乱码问题 -->
+    <mvc:annotation-driven/>
+    <!--静态资源过滤-->
+    <mvc:default-servlet-handler/>
+    <!--    不需要走controller就可以直接跳转-->
+<!--    <mvc:view-controller path="hello" view-name="hello"></mvc:view-controller>-->
+<!--    <mvc:view-controller path="userlogin" view-name="userlogin"></mvc:view-controller>-->
+    <mvc:view-controller path="/my" view-name="my"></mvc:view-controller>
+    <!--配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/html/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <!--    拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--拦截哪些请求-->
+            <mvc:mapping path="/**"/>
+            <!--放行哪些-->
+            <mvc:exclude-mapping path="/"/>
+            <mvc:exclude-mapping path="/login"/>
+            <mvc:exclude-mapping path="/userlogin"/>
+            <mvc:exclude-mapping path="/tologin"/>
+            <mvc:exclude-mapping path="/index"/>
+            <mvc:exclude-mapping path="/my"/>
+            <bean id="MyInterceptor" class="com.Component.Interceptor"></bean>
+        </mvc:interceptor>
+        <!--        添加国际化拦截器-->
+        <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+        </bean>
+    </mvc:interceptors>
+
+    <!--国际化-->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="i18n.login"></property>
+    </bean>
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
+<!--    <bean class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"></bean>-->
+</beans>
